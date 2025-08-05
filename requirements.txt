@@ -1,0 +1,18 @@
+PyPDF2
+pdfplumber
+python-docx
+spacy
+transformers
+pandas
+matplotlib
+seaborn
+sqlalchemy
+fastapi
+uvicorn
+python-docx
+pytesseract
+pdfplumber
+extract-msg
+spacy
+# add your NLP libraries as needed (transformers, torch, etc.)
+
