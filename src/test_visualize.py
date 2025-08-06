@@ -2,11 +2,13 @@
 
 import pandas as pd
 from visualize import plot_entity_frequencies
+
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__)))
-from visualize import plot_entity_frequencies
 # from visualize import plot_entity_frequencies
+# from visualize import plot_entity_frequencies
+from visualize import plot_entity_frequencies
 
 
 
