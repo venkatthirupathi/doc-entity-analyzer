@@ -8,21 +8,56 @@ def connect_db(db_name="smart_doc_analyzer.db"):
     conn = sqlite3.connect(db_name)
     return conn
 
+# def create_table(conn):
+#     """
+#     Create a table to store extracted document info if it doesn't exist.
+#     """
+#     cursor = conn.cursor()
+#     cursor.execute('''
+#         CREATE TABLE IF NOT EXISTS document_info (
+#             id INTEGER PRIMARY KEY AUTOINCREMENT,
+#             document_name TEXT,
+#             entity_text TEXT,
+#             entity_label TEXT,
+#             summary TEXT
+#         );
+#     ''')
+#     conn.commit()
+
+
+
+
+
 def create_table(conn):
-    """
-    Create a table to store extracted document info if it doesn't exist.
-    """
     cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS document_info (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            document_name TEXT,
-            entity_text TEXT,
-            entity_label TEXT,
-            summary TEXT
-        );
-    ''')
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS document_info (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        filename TEXT,
+        entity_text TEXT,
+        entity_label TEXT,
+        summary TEXT
+    )
+    """)
     conn.commit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def insert_record(conn, document_name, entity_text, entity_label, summary):
     """

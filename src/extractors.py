@@ -1,65 +1,66 @@
-import PyPDF2
-import pdfplumber
+import os
+from bs4 import BeautifulSoup
+import pandas as pd
+from PIL import Image
+import pytesseract
+
+from PyPDF2 import PdfReader
 import docx
 
-def extract_pdf_text_pypdf2(filepath):
-    """
-    Extract text from a PDF file using PyPDF2.
-    Returns extracted text as a single string.
-    """
-    text = []
+def extract_pdf_text_pypdf2(path):
+    text = ""
     try:
-        with open(filepath, 'rb') as file:
-            reader = PyPDF2.PdfReader(file)
-            for page in reader.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    text.append(page_text)
-        return '\n'.join(text)
+        reader = PdfReader(path)
+        for page in reader.pages:
+            text += page.extract_text() + "\n"
     except Exception as e:
-        print(f"Error extracting PDF with PyPDF2: {e}")
-        return ""
+        print(f"PDF extraction error for {path}: {e}")
+    return text.strip()
 
-def extract_pdf_text_pdfplumber(filepath):
-    """
-    Extract text from a PDF file using pdfplumber.
-    Returns extracted text as a single string.
-    """
-    text = []
+def extract_docx_text(path):
+    text = ""
     try:
-        with pdfplumber.open(filepath) as pdf:
-            for page in pdf.pages:
-                page_text = page.extract_text()
-                if page_text:
-                    text.append(page_text)
-        return '\n'.join(text)
-    except Exception as e:
-        print(f"Error extracting PDF with pdfplumber: {e}")
-        return ""
-
-def extract_docx_text(filepath):
-    """
-    Extract text from a DOCX (Word) document.
-    Returns extracted text as a single string.
-    """
-    try:
-        doc = docx.Document(filepath)
-        text = []
+        doc = docx.Document(path)
         for para in doc.paragraphs:
-            text.append(para.text)
-        return '\n'.join(text)
+            text += para.text + "\n"
     except Exception as e:
-        print(f"Error extracting DOCX: {e}")
-        return ""
+        print(f"DOCX extraction error for {path}: {e}")
+    return text.strip()
 
-def extract_text_file(filepath):
-    """
-    Extract text from a plain text or email (.eml) file.
-    Returns the file content as a string.
-    """
+def extract_text_file(path):
+    text = ""
     try:
-        with open(filepath, 'r', encoding='utf-8') as file:
-            return file.read()
+        with open(path, "r", encoding="utf-8") as f:
+            text = f.read()
     except Exception as e:
-        print(f"Error extracting text file: {e}")
-        return ""
+        print(f"Text file extraction error for {path}: {e}")
+    return text.strip()
+
+def extract_html_text(path):
+    text = ""
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            soup = BeautifulSoup(f, "html.parser")
+            text = soup.get_text(separator=" ")
+    except Exception as e:
+        print(f"HTML extraction error for {path}: {e}")
+    return text.strip()
+
+def extract_excel_text(path):
+    text = ""
+    try:
+        df = pd.read_excel(path, dtype=str).fillna("")
+        # Join all cell texts row-wise and then combine rows
+        text = "\n".join(df.astype(str).apply(" ".join, axis=1))
+    except Exception as e:
+        print(f"Excel extraction error for {path}: {e}")
+    return text.strip()
+
+def extract_image_text(path):
+    text = ""
+    try:
+        image = Image.open(path)
+        text = pytesseract.image_to_string(image)
+    except Exception as e:
+        print(f"OCR extraction error for {path}: {e}")
+    return text.strip()

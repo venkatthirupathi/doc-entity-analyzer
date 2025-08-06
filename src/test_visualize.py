@@ -21,4 +21,11 @@ data = {
 df = pd.DataFrame(data)
 
 # Plot the entity frequencies
-plot_entity_frequencies(df)
+# plot_entity_frequencies(df)
+plot_entity_frequencies(df, top_n=20)
+
+
+# f = <your DataFrame from database or sample>
+
+# Now, just call with top_n:
+plot_entity_frequencies(df, top_n=20)  # Shows only top 20 entities
