@@ -6,6 +6,7 @@ import pytesseract
 
 from PyPDF2 import PdfReader
 import docx
+import pdfplumber
 
 def extract_pdf_text_pypdf2(path):
     text = ""
@@ -15,6 +16,18 @@ def extract_pdf_text_pypdf2(path):
             text += page.extract_text() + "\n"
     except Exception as e:
         print(f"PDF extraction error for {path}: {e}")
+    return text.strip()
+
+def extract_pdf_text_pdfplumber(path):
+    text = ""
+    try:
+        with pdfplumber.open(path) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+    except Exception as e:
+        print(f"pdfplumber PDF extraction error for {path}: {e}")
     return text.strip()
 
 def extract_docx_text(path):

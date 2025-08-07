@@ -15,7 +15,7 @@ from src.extractors import (
 from src.nlp import perform_ner, perform_summarization
 
 st.set_page_config(page_title="Smart Document Analyzer", layout="wide")
-st.title("Smart Document Analyzer (Frontend Only)")
+st.title("Smart Document Analyzer ")
 
 # Create data folder to save uploaded files
 os.makedirs("data", exist_ok=True)
@@ -54,16 +54,41 @@ if uploaded_files:
             continue
 
         if text and text.strip():
-            entities = perform_ner(text)
-            summary = perform_summarization(text)
+            # Optional: show preview of extracted text for debugging
+            st.write(f"Extracted text preview ({uploaded_file.name}):", text[:300])
 
+            # Perform Named Entity Recognition (NER)
+            try:
+                entities = perform_ner(text)
+                if not entities:
+                    st.info("No named entities detected.")
+            except Exception as e:
+                st.error(f"Error during Named Entity Recognition: {e}")
+                entities = []
+
+            # Perform Summarization
+            try:
+                summary = perform_summarization(text)
+                if not summary or summary.strip() == "":
+                    summary = "Summary not available."
+            except Exception as e:
+                st.error(f"Error during summarization: {e}")
+                summary = "Summary not available."
+
+            # Show summary
             st.subheader(f"Summary for {uploaded_file.name}")
             st.write(summary)
 
-            st.subheader(f"Detected Named Entities:")
-            st.write(entities)
+            # Show named entities nicely
+            st.subheader(f"Detected Named Entities for {uploaded_file.name}:")
+            if entities:
+                # Format entities as a DataFrame for better display
+                df_entities = pd.DataFrame(entities, columns=["Entity Text", "Entity Label"])
+                st.dataframe(df_entities)
+            else:
+                st.write("No entities detected in this document.")
 
-            # Store entity data in memory for visualization
+            # Store entity data + summary for cross-document visualization
             for entity_text, entity_label in entities:
                 all_records.append(
                     {
@@ -76,7 +101,7 @@ if uploaded_files:
         else:
             st.warning(f"No text extracted from {uploaded_file.name}.")
 
-    # Visualization: Aggregated entity frequency from current session uploads
+    # Aggregate and visualize entities across all documents uploaded in current session
     if all_records:
         df = pd.DataFrame(all_records)
         freq_df = (
