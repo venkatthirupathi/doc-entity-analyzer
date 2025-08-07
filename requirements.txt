@@ -12,3 +12,4 @@ pytesseract
 Pillow
 openpyxl
 spacy
+pdfplumber
