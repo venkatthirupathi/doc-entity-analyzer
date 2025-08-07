@@ -55,8 +55,7 @@ Processed and stored entities for: example.pdf
 
 
 
-**Sample Chart:**  
-*(Insert a saved image of your entity frequency bar chart here)*
+
 
 ## Code Documentation  
 - All modules contain descriptive docstrings explaining functions, parameters, and return values.  
